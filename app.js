@@ -1,25 +1,15 @@
 import express from "express";
-import ProductManager from "./productsManager.js";
+import productRouter from "./routes/products.route.js";
 
 const app = express();
-const server = app.listen(8080, () =>
-  console.log("Server running on port: 8080")
-);
-app.use(express.urlencoded({extended:true}))
-const productManager = new ProductManager(); 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("Hello, world!");
-});
+app.use('/api/product', productRouter);
 
-app.get("/products", async (req, res) => {
-  const limit = parseInt(req.query.limit); 
-  const products = await productManager.getProducts(limit); 
-  res.send(products); 
-});
+const PORT = 8080;
+const server = app.listen(PORT, () => console.log('Server running on port:', PORT));
 
-app.get("/products/:id", async (req, res) => {
-  const id = parseInt(req.params.id); 
-  const product = await productManager.getProductsbyId(id);
-  res.send(product);
+server.on('error', (error) => {
+  console.error(`Server error: ${error}`);
 });
